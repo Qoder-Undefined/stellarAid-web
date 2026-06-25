@@ -19,6 +19,7 @@ interface NotificationState {
   fetchNotifications: () => void;
   markAllAsRead: () => void;
   markAsRead: (id: string) => void;
+  addDonationNotification: (n: { id: string; title: string; message: string; timestamp: string }) => void;
 }
 
 // Mock data for notifications
@@ -94,6 +95,21 @@ export const useNotificationStore = create<NotificationState>((set) => ({
     set((state) => ({
       notifications: state.notifications.map((n) => (n.id === id ? { ...n, read: true } : n)),
       unreadCount: state.notifications.filter((n) => !n.read && n.id !== id).length,
+    }));
+  },
+  addDonationNotification: ({ id, title, message, timestamp }) => {
+    const newNotif: Notification = {
+      id,
+      title,
+      message,
+      type: 'donation',
+      read: false,
+      timestamp,
+      link: '/dashboard/campaigns',
+    };
+    set((state) => ({
+      notifications: [newNotif, ...state.notifications].slice(0, 50),
+      unreadCount: state.unreadCount + 1,
     }));
   },
 }));
