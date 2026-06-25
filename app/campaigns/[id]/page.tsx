@@ -6,14 +6,37 @@ import { projectsApi } from '@/lib/api/projects';
 import type { Project } from '@/types/api';
 import { RelatedCampaigns } from '@/components/campaigns/RelatedCampaigns';
 
-const TABS = ['About', 'Milestones', 'Donors', 'Updates', 'Contract Info'] as const;
+import { projectsApi } from '@/lib/api/projects';
+import type { Project } from '@/types/api';
 
 interface CampaignDetailPageProps {
   params: { id: string };
 }
-  const campaignTitle = `Campaign ${params.id}`;
-  const campaignDescription = 'Support meaningful campaigns on StellarAid. View campaign details, milestones, and make a donation to help create positive impact.';
-  const canonicalUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://stellaraid.com'}/campaigns/${params.id}`;
+
+async function getCampaign(id: string): Promise<Project | null> {
+  try {
+    const response = await projectsApi.getProjectById(id);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to load campaign:', error);
+    return null;
+  }
+}
+
+export async function generateMetadata({ params }: CampaignDetailPageProps): Promise<Metadata> {
+  const campaign = await getCampaign(params.id);
+
+  if (!campaign) {
+    return {
+      title: 'Campaign Not Found | StellarAid',
+      description: 'This campaign could not be found.',
+    };
+  }
+
+  const campaignTitle = campaign.title;
+  const campaignDescription = campaign.description || 'Support meaningful campaigns on StellarAid. View campaign details, milestones, and make a donation to help create positive impact.';
+  const canonicalUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://stellaraid.com'}/campaigns/${campaign.id}`;
+  const imageUrl = campaign.imageUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://stellaraid.com'}/og-campaign.png`;
 
   return {
     title: `${campaignTitle} | StellarAid`,
@@ -27,7 +50,7 @@ interface CampaignDetailPageProps {
       type: 'website',
       images: [
         {
-          url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stellaraid.com'}/og-campaign.png`,
+          url: imageUrl,
           width: 1200,
           height: 630,
           alt: campaignTitle,
@@ -38,10 +61,11 @@ interface CampaignDetailPageProps {
       card: 'summary_large_image',
       title: campaignTitle,
       description: campaignDescription,
-      images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://stellaraid.com'}/og-campaign.png`],
+      images: [imageUrl],
       creator: '@StellarAid',
     },
   };
+}
 }
 const TABS = ['About', 'Milestones', 'Donors', 'Updates', 'Contract Info'] as const;
 export default function CampaignDetailPage({ params }: CampaignDetailPageProps) {
