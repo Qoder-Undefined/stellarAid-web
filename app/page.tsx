@@ -4,12 +4,23 @@ import Image from "next/image";
 import { toastSuccess, toastError, toastInfo, toastLoading, toastDismiss } from '@/utils/toast';
 import { useAppSelector, useAppDispatch } from './store/hooks';
 import { fetchData } from './store/slices/apiSlice';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import env from './config/env';
 
 export default function Home() {
   const { loading, error, data } = useAppSelector((state) => state.api);
   const dispatch = useAppDispatch();
   const [loadingToastId, setLoadingToastId] = useState<string | null>(null);
+
+  // Log environment configuration on component mount
+  useEffect(() => {
+    console.log('🌐 Environment Configuration:', {
+      apiBaseUrl: env.apiBaseUrl,
+      stellarNetwork: env.stellarNetwork,
+      isDevelopment: env.isDevelopment,
+      isProduction: env.isProduction,
+    });
+  }, []);
 
   const handleShowSuccess = () => {
     toastSuccess('Operation completed successfully!');
@@ -132,11 +143,35 @@ export default function Home() {
             <li>Global <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">Toaster</code> in root layout</li>
             <li>Redux Toolkit configured as global state management</li>
             <li>Redux DevTools automatically configured</li>
+            <li>Environment variables with validation and type safety</li>
             <li>StellarAid theme colors for all toast types</li>
             <li>Success, error, info, and loading toast helpers</li>
             <li>Async thunks with proper loading/success/error states</li>
             <li>Auto-dismiss and manual dismissal support</li>
           </ul>
+
+          {/* Environment Status Display */}
+          <div className="mt-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+            <h3 className="text-lg font-semibold mb-3">Current Environment Status</h3>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <span className="text-gray-500 dark:text-gray-400">Environment:</span>{' '}
+                <span className={`font-medium ${env.isDevelopment ? 'text-green-600' : 'text-blue-600'}`}>
+                  {env.isDevelopment ? 'Development' : 'Production'}
+                </span>
+              </div>
+              <div>
+                <span className="text-gray-500 dark:text-gray-400">Stellar Network:</span>{' '}
+                <span className="font-medium text-purple-600">{env.stellarNetwork}</span>
+              </div>
+              <div className="col-span-2">
+                <span className="text-gray-500 dark:text-gray-400">API Base URL:</span>{' '}
+                <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded text-xs">
+                  {env.apiBaseUrl}
+                </code>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="bg-gray-50 dark:bg-gray-900 p-6 rounded-lg">
           <h3 className="text-lg font-semibold mb-3 dark:text-white">Files Created/Modified</h3>
