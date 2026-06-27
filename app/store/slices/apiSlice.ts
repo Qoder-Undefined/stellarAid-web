@@ -6,7 +6,7 @@ import { toastSuccess, toastError, toastLoading, toastDismiss } from '@/utils/to
 interface ApiState {
   loading: boolean;
   error: string | null;
-  data: unknown | null;
+  data: any | null;
 }
 
 const initialState: ApiState = {
