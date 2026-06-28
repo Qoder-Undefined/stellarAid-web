@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
  * Show a success toast notification
  * @param message - The message to display
  */
-export const CampaignSuccess = (message: string): void => {
+export const profileSuccess = (message: string): void => {
   toast.success(message, {
     duration: 4000,
     position: 'top-right',
@@ -15,7 +15,7 @@ export const CampaignSuccess = (message: string): void => {
  * Show an error toast notification
  * @param message - The message to display
  */
-export const CampaignError = (message: string): void => {
+export const profileError  = (message: string): void => {
   toast.error(message, {
     duration: 5000,
     position: 'top-right',
@@ -26,7 +26,7 @@ export const CampaignError = (message: string): void => {
  * Show an info toast notification
  * @param message - The message to display
  */
-export const CampaignInfo = (message: string): void => {
+export const profileInfo = (message: string): void => {
   toast(message, {
     duration: 4000,
     position: 'top-right',
@@ -39,7 +39,7 @@ export const CampaignInfo = (message: string): void => {
  * @param message - The message to display
  * @returns The toast ID that can be used to dismiss it
  */
-export const CampaignLoading = (message: string): string => {
+export const profileLoading = (message: string): string => {
   return toast.loading(message, {
     position: 'top-right',
   });
@@ -49,13 +49,13 @@ export const CampaignLoading = (message: string): string => {
  * Dismiss a specific toast by ID
  * @param toastId - The ID of the toast to dismiss
  */
-export const CampaignDismiss = (toastId: string): void => {
+export const profileDismiss = (toastId: string): void => {
   toast.dismiss(toastId);
 };
 
 /**
  * Dismiss all currently active toasts
  */
-export const CampaignDismissAll = (): void => {
+export const profileDismissAll = (): void => {
   toast.dismiss();
 };
